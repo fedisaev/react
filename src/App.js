@@ -1,26 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './styles/App.css';
-import PostList from "./components/PostList";
-import MyButton from "./components/UI/button/MyButton";
+import {BrowserRouter} from "react-router-dom";
+import Navbar from "./components/UI/navbar/Navbar";
+import AppRouter from "./components/AppRouter";
+import {AuthContext} from "./context";
 
 const App = () => {
 
-    const [posts] = useState([
-        {id: 1, title: 'Javascript', body: 'Javascript is programming language'},
-        {id: 2, title: 'Javascript1', body: 'Javascript1 is programming language'},
-        {id: 3, title: 'Javascript2', body: 'Javascript2 is programming language'}
-    ])
+    const [isAuth, setIsAuth] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
+    useEffect(() => {
+        if (localStorage.getItem('auth')) {
+            setIsAuth(true)
+        }
+        setIsLoading(false);
+    }, [])
 
     return (
-        <div className={'App'}>
-            <form>
-                <input type="text" placeholder={'Post title'}/>
-                <input type="text" placeholder={'Post description'}/>
-                <MyButton disabled>Create post</MyButton>
-            </form>
-            <PostList posts={posts} title={'Posts list 1'}/>
-        </div>
+        <AuthContext.Provider value={{
+            isAuth, setIsAuth,isLoading
+        }}>
+            <BrowserRouter>
+                <Navbar/>
+                <AppRouter/>
+            </BrowserRouter>
+        </AuthContext.Provider>
+
     );
 };
 
